@@ -1,7 +1,7 @@
 local KrissyUtil = require("KrissyUtil")
 local LovenseSession = require "SessionAPI"
 
-local Lovense = LovenseSession:new("vq6yzxf0")
+local Lovense = LovenseSession:new("xxxxxx")
 
 local update_interval = 5
 local prev_update = 0
@@ -29,3 +29,4 @@ for i = 0, 20 do
 end
 update_buttplug()
 Lovense:Vibrate(0) -- stop vibration
+Lovense:Disconnect("Client Disconnected")

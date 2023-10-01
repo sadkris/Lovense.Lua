@@ -109,7 +109,11 @@ do
             )
             self.ws:send('42["anon_open_control_panel_ts",{"linkId":"' .. self.sessionData.data.controlLinkData.linkId .. '"}]')
         elseif KrissyUtil:startsWith(msg, tostring(self.wsData.pongCode)) and self.initDone then
-            ws:send('42["anon_open_control_panel_ts",{"linkId":"' .. self.sessionData.data.controlLinkData.linkId .. '"}]')
+            self.ws:send('42["anon_open_control_panel_ts",{"linkId":"' .. self.sessionData.data.controlLinkData.linkId .. '"}]')
+        elseif KrissyUtil:startsWith(msg, '42["anon_link_is_end_tc') then
+            self.active = false
+            self.connected = false
+            self.ws:close()
         end
         while not self.connected or not self.initDone do
             self:get_and_handle_message()

@@ -12,7 +12,7 @@ local Lovense = LovenseSession:new("xxxxxx")
 local update_interval = 5
 local prev_update = 0
 
-function update_buttplug()
+function update_session()
 	while (os.clock() < (prev_update + update_interval)) do
 	end
 	local err = Lovense:get_and_handle_message()
@@ -26,11 +26,11 @@ end
 Lovense:Connect()
 print("Connected")
 for i = 0, 20 do
-	update_buttplug()
+	update_session()
 	Lovense:Vibrate(i) -- from 0 to 20 (max)
 	KrissyUtil:sleep(3)
 end
-update_buttplug()
+update_session()
 Lovense:Vibrate(0) -- stop vibration
 Lovense:Disconnect()
 ```

@@ -25,12 +25,17 @@ end
 
 Lovense:Connect()
 print("Connected")
-for i = 0, 20 do
+for i = 0, 5 do
 	update_session()
-	Lovense:Vibrate(i) -- from 0 to 20 (max)
+	Lovense:Vibrate(5) -- from 0 to 20 (max)
+	print("Sent Initial Vibrate (5)")
+	KrissyUtil:sleep(3)
+	update_session()
+	Lovense:Vibrate(0) -- stop vibration
+	print("Sent Stop Vibrate")
 	KrissyUtil:sleep(3)
 end
 update_session()
 Lovense:Vibrate(0) -- stop vibration
-Lovense:Disconnect()
+Lovense:Disconnect("Client Disconnected")
 ```

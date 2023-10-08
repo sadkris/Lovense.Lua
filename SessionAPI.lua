@@ -31,6 +31,11 @@ do
         local headers = poll_blocking(sock)
         local body = poll_blocking(sock)
         sock:close()
+        if JSON.decode(body).message then
+            print("[LOVENSE] " .. JSON.decode(body).message)
+            print("rip bozo")
+            os.exit()
+        end
         print(JSON.decode(body).data.id)
         return {
             Status = status,
@@ -108,10 +113,13 @@ do
                 end
             )
             self.ws:send('42["anon_open_control_panel_ts",{"linkId":"' .. self.sessionData.data.controlLinkData.linkId .. '"}]')
-        elseif KrissyUtil:startsWith(msg, tostring(self.wsData.pongCode)) and self.initDone then
-            self.ws:send('42["anon_open_control_panel_ts",{"linkId":"' .. self.sessionData.data.controlLinkData.linkId .. '"}]')
-        elseif KrissyUtil:startsWith(msg, '42["anon_link_is_end_tc') then
-            self:Disconnect("Control Link ended")
+        elseif KrissyUtil:startsWith(msg, '42') then
+            if KrissyUtil:startsWith(msg, '42["anon_link_is_end_tc') then
+                self:Disconnect("Control Link ended")
+            elseif KrissyUtil:startsWith(msg, '42["which_app_page_open_now_tc"') then
+                local msgData = JSON.decode(JSON.decode(msg:sub(3))[2])
+                self.ws:send('42["app_open_this_page_now_ts",{"pepsiId":"' .. msgData.pepsiId .. '","webPage":"control_link"}]')
+            end
         end
         while not self.connected or not self.initDone do
             self:get_and_handle_message()
@@ -142,13 +150,9 @@ do
         end
 
         self.ws:send(
-            '42["anon_command_link_ts",{"toyCommandJson":"{\\"cate\\":\\"id\\",\\"id\\":{\\"' ..
+            '42["anon_command_link_ts",{"toyCommandJson":"{\\"version\\":5,\\"cate\\":\\"id\\",\\"id\\":{\\"' ..
                 self.toys[1].id ..
-                    '\\":{\\"v\\":-1,\\"v1\\":' ..
-                        strength ..
-                            ',\\"v2\\":' ..
-                                strength ..
-                                    ',\\"p\\":-1,\\"r\\":-1}}}","linkId":"' ..
+                    '\\":{\\"v\\":' .. strength .. ',\\"v1\\":-1,\\"v2\\":-1,\\"v3\\":-1,\\"s\\":-1,\\"p\\":-1,\\"r\\":-1,\\"f\\":-1,\\"t\\":-1}}}","linkId":"' ..
                                         self.sessionData.data.controlLinkData.linkId .. '","userTouch":false}]'
         )
     end
